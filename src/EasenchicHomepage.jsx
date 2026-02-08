@@ -456,7 +456,10 @@ const EasenchicHomepage = () => {
                 </button>
               )
             ))}
-            <button className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+            <button 
+              onClick={() => showToast('More products coming soon! Stay tuned! 🛍️', 'info')}
+              className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            >
               More...
             </button>
           </div>
@@ -659,14 +662,16 @@ const EasenchicHomepage = () => {
           <div className="mb-4 w-80 md:w-96 bg-white rounded-lg shadow-2xl overflow-hidden animate-slideUp">
             {/* Header */}
             <div className="bg-[#075E54] text-white p-4 flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-                <img 
-                  src="/src/assets/no background fabulous chic.png" 
-                  alt="Fabulous Chic" 
-                  className="w-full h-full object-contain"
-                />
-                {/* Green online dot */}
-                <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-[#00ff00] border-[3px] border-[#075E54] rounded-full"></span>
+              <div className="relative flex-shrink-0">
+                <div className="w-14 h-14 rounded-full bg-white p-0.5 flex items-center justify-center overflow-hidden">
+                  <img 
+                    src="./src/assets/no background fabulous chic.png" 
+                    alt="Fabulous Chic" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                {/* Green online dot - outside profile */}
+                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#00ff00] border-[2.5px] border-white rounded-full"></span>
               </div>
               <div className="flex-1">
                 <h4 className="font-semibold">Fabulous Chic</h4>
@@ -738,7 +743,8 @@ const EasenchicHomepage = () => {
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 px-4 py-2.5 rounded-full outline-none bg-white border border-gray-300 focus:border-gray-400"
+                className="flex-1 px-4 py-2.5 rounded-full bg-white border-2 border-gray-300 focus:border-[#25D366] outline-none"
+                style={{ WebkitAppearance: 'none' }}
               />
               <button 
                 type="submit" 
