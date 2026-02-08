@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, ShoppingCart, User, X, ChevronDown, Phone, MapPin, Send, LogOut, Mail } from 'lucide-react';
+import { Search, ShoppingCart, User, X, ChevronDown, Phone, MapPin, Send, LogOut, Mail, Menu } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from './context/CartContext';
 import { useCurrency } from './context/CurrencyContext';
@@ -28,6 +28,8 @@ const EasenchicHomepage = () => {
   const [animateHero, setAnimateHero] = useState(true);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([{ text: 'Hi! 👋 How can we help you today?', sender: 'bot' }]);
   const [chatInput, setChatInput] = useState('');
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -251,7 +253,10 @@ const EasenchicHomepage = () => {
               </div>
 
               {/* Search Icon - Mobile */}
-              <button className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button 
+                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <Search size={20} />
               </button>
 
@@ -326,10 +331,120 @@ const EasenchicHomepage = () => {
                   </span>
                 )}
               </button>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Menu size={20} />
+              </button>
             </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile Search Modal */}
+      {isMobileSearchOpen && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 md:hidden">
+          <div className="bg-white p-4">
+            <div className="flex items-center gap-2 mb-4">
+              <form onSubmit={handleSearch} className="flex-1 relative">
+                <input 
+                  type="search" 
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4b2e1e] focus:border-transparent"
+                />
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-md">
+                  <Search size={20} className="text-gray-600" />
+                </button>
+              </form>
+              <button
+                onClick={() => setIsMobileSearchOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 md:hidden">
+          <div className="bg-white h-full w-64 p-6 animate-slideLeft">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-xl font-bold">Menu</h2>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Currency Display */}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">CURRENCY</p>
+                <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg">
+                  <CountryFlag countryCode={getCurrencyInfo().countryCode} size="sm" />
+                  <span className="text-sm font-medium">{selectedCurrency}</span>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Go to My Account to change</p>
+              </div>
+
+              {/* User Section */}
+              {isLoggedIn ? (
+                <div className="space-y-2">
+                  <p className="text-xs text-gray-500 mb-2">ACCOUNT</p>
+                  <button 
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      navigate('/my-account');
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-medium">
+                      {firstNameCapitalized.charAt(0)}
+                    </div>
+                    <div className="text-left">
+                      <p className="font-medium text-sm">Hi, {displayName}</p>
+                      <p className="text-xs text-gray-500">View account</p>
+                    </div>
+                  </button>
+                  <button 
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsLogoutModalOpen(true);
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <LogOut size={18} />
+                    <span className="text-sm font-medium">Sign Out</span>
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">ACCOUNT</p>
+                  <Link 
+                    to="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full flex items-center gap-2 px-4 py-3 bg-[#4b2e1e] text-white rounded-lg hover:bg-[#3c2416] transition-colors justify-center"
+                  >
+                    <User size={18} />
+                    <span className="font-medium">Login</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section key={location.key} className="relative h-[500px] bg-white flex items-center justify-center">
@@ -685,7 +800,7 @@ const EasenchicHomepage = () => {
 
       {/* Logout Confirmation Modal */}
       {isLogoutModalOpen && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black bg-opacity-20 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 backdrop-blur-lg bg-black/30 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6 relative animate-slideUp">
             <button
               onClick={() => setIsLogoutModalOpen(false)}

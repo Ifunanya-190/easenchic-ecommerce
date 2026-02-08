@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useToast } from '../components/ToastProvider.jsx';
 import { useNavigate, Link } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
-import { Search, ShoppingCart, User, ChevronDown, Phone, MapPin, Mail } from 'lucide-react';
+import { Search, ShoppingCart, User, ChevronDown, Phone, MapPin, Mail, X, Menu } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import CartModal from '../components/CartModal';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -20,6 +20,8 @@ const Login = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const sendOtp = async () => {
     if (!email) return;
@@ -124,13 +126,23 @@ const Login = () => {
                 )}
               </div>
 
-              <button className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button 
+                onClick={() => setIsMobileSearchOpen(true)}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <Search size={20} />
               </button>
 
               <span className="hidden md:block text-sm font-medium text-[#4b2e1e]">
                 Login
               </span>
+
+              <button 
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Menu size={24} />
+              </button>
 
               <button 
                 onClick={() => setIsCartOpen(true)}
@@ -147,6 +159,83 @@ const Login = () => {
           </div>
         </div>
       </nav>
+
+      {/* Mobile Search Modal */}
+      {isMobileSearchOpen && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-start justify-center pt-4">
+          <div className="bg-white w-full max-w-2xl mx-4 rounded-lg shadow-xl">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Search Products</h3>
+                <button onClick={() => setIsMobileSearchOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={(e) => { e.preventDefault(); setIsMobileSearchOpen(false); navigate(`/search?q=${encodeURIComponent(searchQuery)}`); }} className="relative">
+                <input 
+                  type="search" 
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4b2e1e]"
+                />
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-md">
+                  <Search size={20} className="text-gray-600" />
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Menu Drawer */}
+      {isMobileMenuOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50" onClick={() => setIsMobileMenuOpen(false)} />
+          <div className="fixed left-0 top-0 bottom-0 w-64 bg-white z-50 shadow-xl animate-slideLeft">
+            <div className="flex flex-col h-full">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-lg font-semibold">Menu</h2>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">Currency</p>
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                    <svg className="w-5 h-5" viewBox="0 0 36 24" fill="none">
+                      <rect width="12" height="24" fill="#008751"/>
+                      <rect x="12" width="12" height="24" fill="white"/>
+                      <rect x="24" width="12" height="24" fill="#008751"/>
+                    </svg>
+                    <span className="font-medium">NGN</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">Go to My Account to change</p>
+                </div>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      navigate('/');
+                    }}
+                    className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium"
+                  >
+                    Go to Homepage
+                  </button>
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-800 font-medium">Login / Register</p>
+                    <p className="text-xs text-green-600 mt-1">Enter your email below to continue</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 

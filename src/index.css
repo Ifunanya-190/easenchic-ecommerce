@@ -35,3 +35,16 @@ body {
   animation: slideDown 1.2s ease-out;
   animation-fill-mode: both;
 }
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slideLeft {
+  animation: slideLeft 0.3s ease-out;
+}

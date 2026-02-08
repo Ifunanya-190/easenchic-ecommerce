@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ShoppingCart, ChevronDown, User, LogOut, Package, Star, X, Truck, Clock } from 'lucide-react';
+import { Search, ShoppingCart, ChevronDown, User, LogOut, Package, Star, X, Truck, Clock, Menu } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useCurrency } from '../context/CurrencyContext';
 import CartModal from '../components/CartModal';
@@ -24,6 +24,8 @@ const MyAccount = () => {
   const [currentZipSuggestion, setCurrentZipSuggestion] = useState('');
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [showPhoneDropdown, setShowPhoneDropdown] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -321,7 +323,10 @@ const MyAccount = () => {
                 </div>
               </div>
 
-              <button className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button 
+                onClick={() => setIsMobileSearchOpen(true)}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
                 <Search size={20} />
               </button>
 
@@ -364,6 +369,13 @@ const MyAccount = () => {
               </div>
 
               <button 
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Menu size={24} />
+              </button>
+
+              <button 
                 onClick={() => setIsCartOpen(true)}
                 className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
@@ -378,6 +390,94 @@ const MyAccount = () => {
           </div>
         </div>
       </nav>
+
+      {/* Mobile Search Modal */}
+      {isMobileSearchOpen && (
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-start justify-center pt-4">
+          <div className="bg-white w-full max-w-2xl mx-4 rounded-lg shadow-xl">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Search Products</h3>
+                <button onClick={() => setIsMobileSearchOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={(e) => { handleSearch(e); setIsMobileSearchOpen(false); }} className="relative">
+                <input 
+                  type="search" 
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4b2e1e]"
+                />
+                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-md">
+                  <Search size={20} className="text-gray-600" />
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Menu Drawer */}
+      {isMobileMenuOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50" onClick={() => setIsMobileMenuOpen(false)} />
+          <div className="fixed left-0 top-0 bottom-0 w-64 bg-white z-50 shadow-xl animate-slideLeft">
+            <div className="flex flex-col h-full">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="text-lg font-semibold">Menu</h2>
+                <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                <div>
+                  <p className="text-xs text-gray-500 mb-2">Currency</p>
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                    <CountryFlag countryCode={getCurrencyInfo().countryCode} size="sm" />
+                    <span className="font-medium">{selectedCurrency}</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">Select a country below to change</p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-semibold">
+                      {firstNameCapitalized.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">{displayName}</p>
+                      <p className="text-xs text-gray-500">{email}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      navigate('/');
+                    }}
+                    className="w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium"
+                  >
+                    Go to Homepage
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsLogoutModalOpen(true);
+                    }}
+                    className="w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium flex items-center gap-2"
+                  >
+                    <LogOut size={18} />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <CartModal isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
 
@@ -858,7 +958,7 @@ const MyAccount = () => {
       {isLogoutModalOpen && (
         <>
           <div 
-            className="fixed inset-0 backdrop-blur-sm bg-black/20 z-40"
+            className="fixed inset-0 backdrop-blur-lg bg-black/30 z-40"
             onClick={() => setIsLogoutModalOpen(false)}
           />
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl z-50 p-6 w-full max-w-md">
