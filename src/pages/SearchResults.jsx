@@ -10,7 +10,7 @@ import { products as PRODUCTS } from '../data/products.js';
 
 const SearchResults = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const { getTotalItems, showToast } = useCart();
   const { formatPrice, selectedCurrency, getCurrencyInfo } = useCurrency();
@@ -29,6 +29,11 @@ const SearchResults = () => {
   const firstNameCapitalized = displayFirstName.charAt(0).toUpperCase() + displayFirstName.slice(1);
   const displayName = savedLastName ? `${firstNameCapitalized} ${savedLastName}` : firstNameCapitalized;
 
+  // Update searchQuery when URL parameter changes
+  React.useEffect(() => {
+    setSearchQuery(query);
+  }, [query]);
+
   const handleLogout = () => {
     sessionStorage.removeItem('easenchic_email');
     sessionStorage.removeItem('easenchic_firstName');
@@ -46,8 +51,7 @@ const SearchResults = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      window.location.reload();
+      setSearchParams({ q: searchQuery.trim() });
     }
   };
 
@@ -61,22 +65,22 @@ const SearchResults = () => {
               <Logo />
             </div>
 
-            <div className="hidden md:flex flex-1 max-w-md">
+            <div className="flex flex-1 max-w-md mx-2 md:mx-0">
               <form onSubmit={handleSearch} className="relative w-full">
                 <input 
                   type="search" 
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4b2e1e] focus:border-transparent transition-all"
+                  className="w-full px-3 py-1.5 md:px-4 md:py-2 pr-9 md:pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4b2e1e] focus:border-transparent transition-all text-sm md:text-base"
                 />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-md transition-colors">
-                  <Search size={20} className="text-gray-600" />
+                <button type="submit" className="absolute right-1.5 md:right-2 top-1/2 -translate-y-1/2 p-1 md:p-1.5 hover:bg-gray-100 rounded-md transition-colors">
+                  <Search size={18} className="text-gray-600 md:w-5 md:h-5" />
                 </button>
               </form>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {/* Currency Display */}
               <div className="hidden md:block relative group">
                 <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg cursor-help">
@@ -89,13 +93,6 @@ const SearchResults = () => {
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900"></div>
                 </div>
               </div>
-
-              <button 
-                onClick={() => setIsMobileSearchOpen(true)}
-                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Search size={20} />
-              </button>
 
               {isLoggedIn ? (
                 <div className="relative hidden md:block">
@@ -164,35 +161,6 @@ const SearchResults = () => {
           </div>
         </div>
       </nav>
-
-      {/* Mobile Search Modal */}
-      {isMobileSearchOpen && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-start justify-center pt-4">
-          <div className="bg-white w-full max-w-2xl mx-4 rounded-lg shadow-xl">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Search Products</h3>
-                <button onClick={() => setIsMobileSearchOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-                  <X size={20} />
-                </button>
-              </div>
-              <form onSubmit={(e) => { handleSearch(e); setIsMobileSearchOpen(false); }} className="relative">
-                <input 
-                  type="search" 
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
-                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4b2e1e]"
-                />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-md">
-                  <Search size={20} className="text-gray-600" />
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
@@ -280,13 +248,13 @@ const SearchResults = () => {
         </div>
 
         {searchResults.length === 0 ? (
-          <div className="text-center py-20 relative">
-            <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-              <Frown size={200} className="text-gray-400" />
+          <div className="text-center py-12 md:py-20 relative px-4">
+            <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+              <Frown size={180} className="text-gray-400 md:w-[250px] md:h-[250px]" />
             </div>
             <div className="relative z-10">
-              <p className="text-xl text-gray-700 mb-2">No products were found.</p>
-              <p className="text-gray-500">Try searching with different keywords</p>
+              <p className="text-lg md:text-xl text-gray-700 mb-2 font-medium">No products were found.</p>
+              <p className="text-sm md:text-base text-gray-500">Try searching with different keywords</p>
             </div>
           </div>
         ) : (

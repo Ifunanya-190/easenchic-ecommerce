@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, ShoppingCart, User, X, ChevronDown, Phone, MapPin, Send, LogOut, Mail, Menu } from 'lucide-react';
+import { Search, ShoppingCart, User, X, ChevronDown, Phone, MapPin, Send, LogOut, Mail, Menu, Frown } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from './context/CartContext';
 import { useCurrency } from './context/CurrencyContext';
@@ -221,24 +221,24 @@ const EasenchicHomepage = () => {
               <Logo />
             </div>
 
-            {/* Search Bar - Hidden on mobile */}
-            <div className="hidden md:flex flex-1 max-w-md">
+            {/* Search Bar - Visible on all screens */}
+            <div className="flex flex-1 max-w-md mx-2 md:mx-0">
               <form onSubmit={handleSearch} className="relative w-full">
                 <input 
                   type="search" 
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4b2e1e] focus:border-transparent transition-all"
+                  className="w-full px-3 py-1.5 md:px-4 md:py-2 pr-9 md:pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4b2e1e] focus:border-transparent transition-all text-sm md:text-base"
                 />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-md transition-colors">
-                  <Search size={20} className="text-gray-600" />
+                <button type="submit" className="absolute right-1.5 md:right-2 top-1/2 -translate-y-1/2 p-1 md:p-1.5 hover:bg-gray-100 rounded-md transition-colors">
+                  <Search size={18} className="text-gray-600 md:w-5 md:h-5" />
                 </button>
               </form>
             </div>
 
             {/* Right Side Icons */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               {/* Currency Display */}
               <div className="hidden md:block relative group">
                 <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg cursor-help">
@@ -251,14 +251,6 @@ const EasenchicHomepage = () => {
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-gray-900"></div>
                 </div>
               </div>
-
-              {/* Search Icon - Mobile */}
-              <button 
-                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Search size={20} />
-              </button>
 
               {/* User Dropdown or Login */}
               {isLoggedIn ? (
@@ -343,35 +335,6 @@ const EasenchicHomepage = () => {
           </div>
         </div>
       </nav>
-
-      {/* Mobile Search Modal */}
-      {isMobileSearchOpen && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 md:hidden">
-          <div className="bg-white p-4">
-            <div className="flex items-center gap-2 mb-4">
-              <form onSubmit={handleSearch} className="flex-1 relative">
-                <input 
-                  type="search" 
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
-                  className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#4b2e1e] focus:border-transparent"
-                />
-                <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-md">
-                  <Search size={20} className="text-gray-600" />
-                </button>
-              </form>
-              <button
-                onClick={() => setIsMobileSearchOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg"
-              >
-                <X size={20} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
@@ -494,17 +457,23 @@ const EasenchicHomepage = () => {
       {/* Products Grid */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-xl text-gray-500 mb-4">No products found</p>
-            <button 
-              onClick={() => {
-                setActiveFilter('All');
-                setSearchQuery('');
-              }}
-              className="bg-[#4b2e1e] text-white px-6 py-2 rounded-lg hover:bg-[#3c2416] transition-colors"
-            >
-              Clear Filters
-            </button>
+          <div className="text-center py-12 md:py-20 relative px-4">
+            <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+              <Frown size={180} className="text-gray-400 md:w-[250px] md:h-[250px]" />
+            </div>
+            <div className="relative z-10">
+              <p className="text-lg md:text-xl text-gray-700 mb-2 font-medium">No products found</p>
+              <p className="text-sm md:text-base text-gray-500 mb-4">Try different keywords or filters</p>
+              <button 
+                onClick={() => {
+                  setActiveFilter('All');
+                  setSearchQuery('');
+                }}
+                className="bg-[#4b2e1e] text-white px-6 py-2 rounded-lg hover:bg-[#3c2416] transition-colors"
+              >
+                Clear Filters
+              </button>
+            </div>
           </div>
         ) : (
           <>
