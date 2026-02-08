@@ -4,6 +4,23 @@ export const getSmartResponse = (userMessageLower, currencyInfo = { symbol: '₦
   
   const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
   
+  // SHIPPING CHOICE - Standard or Express
+  if (userMessageLower.includes('standard') && userMessageLower.length < 15) {
+    return getRandom([
+      'Standard is a perfect choice! 📦 Your order will arrive in 3-5 days. What would you like to order?',
+      'Great pick! Standard delivery is reliable and affordable. Ready to add items to your cart?',
+      'Perfect! Standard shipping (3-5 days) selected. What products can I help you find?'
+    ]);
+  }
+
+  if (userMessageLower.includes('express') && userMessageLower.length < 15) {
+    return getRandom([
+      'Express it is! ⚡ Your order will arrive in just 1-2 days. What would you like to order?',
+      'Excellent choice! Express delivery gets your items to you super fast (1-2 days). Ready to shop?',
+      'Perfect! Express shipping (1-2 days) selected. What can I add to your order?'
+    ]);
+  }
+  
   // Helper to format prices in user's currency
   const formatPrice = (priceInNGN) => {
     const convertedPrice = Math.round(priceInNGN * currencyInfo.rate);

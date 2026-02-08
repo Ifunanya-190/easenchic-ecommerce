@@ -48,3 +48,25 @@ body {
 .animate-slideLeft {
   animation: slideLeft 0.3s ease-out;
 }
+
+/* Fix input borders on iOS/mobile devices */
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="tel"],
+input[type="password"],
+textarea,
+select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  border-style: solid !important;
+  box-shadow: none !important;
+}
+
+/* Ensure borders remain visible on focus */
+input:focus,
+textarea:focus,
+select:focus {
+  border-style: solid !important;
+}

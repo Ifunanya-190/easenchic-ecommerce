@@ -10,6 +10,7 @@ import { useToast } from './components/ToastProvider.jsx';
 import Logo from './components/Logo';
 import CountryFlag from './components/CountryFlag';
 import heroLogoImage from './assets/fabulous chic image.png';
+import noBackgroundLogo from './assets/no background fabulous chic.png';
 import { getAIResponse } from './utils/aiChatService';
 
 const EasenchicHomepage = () => {
@@ -665,7 +666,7 @@ const EasenchicHomepage = () => {
               <div className="relative flex-shrink-0">
                 <div className="w-14 h-14 rounded-full bg-white p-0.5 flex items-center justify-center overflow-hidden">
                   <img 
-                    src="./src/assets/no background fabulous chic.png" 
+                    src={noBackgroundLogo}
                     alt="Fabulous Chic" 
                     className="w-full h-full object-contain"
                   />
