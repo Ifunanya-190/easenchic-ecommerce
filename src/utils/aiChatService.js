@@ -6,9 +6,12 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 // Fallback to our smart response system if no API key
 import { getSmartResponse } from './chatResponses';
 
-// Store for business context
-const BUSINESS_CONTEXT = `
+// Store for business context - will be dynamically updated with user's currency
+const getBUSINESS_CONTEXT = (currencyInfo) => `
 You are a friendly customer service representative for Fabulous Chic, a premium bag and accessories store.
+
+IMPORTANT: The customer has selected ${currencyInfo.country} (${currencyInfo.code}) as their currency.
+ALL prices must be shown in ${currencyInfo.symbol} (${currencyInfo.code}).
 
 Our products include:
 - The Luxe Collection: Premium bags ranging from ₦48,000 to ₦56,000
@@ -30,7 +33,9 @@ Contact Information:
 - Location: Lagos Mainland, Lagos, Nigeria
 
 Important Instructions:
-- Do calculations when asked (e.g., "5 bags at ₦8,500 each = ₦42,500")
+- ALWAYS convert prices to ${currencyInfo.code} (multiply NGN price by ${currencyInfo.rate})
+- Show prices in ${currencyInfo.symbol} format
+- Do calculations when asked (e.g., "5 bags at ${currencyInfo.symbol}8,500 each = ${currencyInfo.symbol}42,500")
 - Provide contact info when asked for phone, email, or how to reach us
 - Recognize city names (Lagos, Accra, etc.) and confirm delivery availability
 - Be specific about product names when mentioned (like Cherry Charms)
@@ -62,7 +67,7 @@ export const getAIResponse = async (userMessage, chatHistory = [], currencyInfo 
       .map(msg => `${msg.sender === 'user' ? 'Customer' : 'Assistant'}: ${msg.text}`)
       .join('\n');
 
-    const prompt = `${BUSINESS_CONTEXT}\n\nPrevious conversation:\n${conversationContext}\n\nCustomer: ${userMessage}\n\nAssistant:`;
+    const prompt = `${getBUSINESS_CONTEXT(currencyInfo)}\n\nPrevious conversation:\n${conversationContext}\n\nCustomer: ${userMessage}\n\nAssistant:`;
 
     console.log('Sending request to Gemini API...');
 
@@ -78,9 +83,9 @@ export const getAIResponse = async (userMessage, chatHistory = [], currencyInfo 
           }]
         }],
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 200,
-          topP: 0.8,
+          temperature: 0.9,
+          maxOutputTokens: 150,
+          topP: 0.95,
           topK: 40
         }
       })

@@ -101,7 +101,12 @@ const EasenchicHomepage = () => {
     
     try {
       // Get AI response with chat history and currency info for context
-      const currencyInfo = getCurrencyInfo();
+      const currencyInfo = {
+        symbol: getCurrencyInfo().symbol,
+        code: selectedCurrency,
+        country: getCurrencyInfo().country,
+        rate: getCurrencyInfo().rate
+      };
       const botResponse = await getAIResponse(userMessage, chatMessages, currencyInfo);
       
       // Remove typing indicator and add actual response
@@ -300,7 +305,6 @@ const EasenchicHomepage = () => {
                   >
                     Login
                   </Link>
-
                   {/* Account Icon */}
                   <Link 
                     to="/login"
@@ -468,6 +472,7 @@ const EasenchicHomepage = () => {
                 onClick={() => {
                   setActiveFilter('All');
                   setSearchQuery('');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 className="bg-[#4b2e1e] text-white px-6 py-2 rounded-lg hover:bg-[#3c2416] transition-colors"
               >
@@ -646,34 +651,66 @@ const EasenchicHomepage = () => {
       {/* WhatsApp Widget */}
       <div className="fixed bottom-6 right-6 z-50">
         {isWhatsAppOpen && (
-          <div className="mb-4 w-80 bg-white rounded-lg shadow-2xl overflow-hidden animate-slideUp">
+          <div className="mb-4 w-80 md:w-96 bg-white rounded-lg shadow-2xl overflow-hidden animate-slideUp">
             {/* Header */}
-            <div className="bg-[#25D366] text-white p-4 flex items-center gap-3">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl">
-                🛍️
+            <div className="bg-[#075E54] text-white p-4 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 relative">
+                <img 
+                  src="/src/assets/no background fabulous chic.png" 
+                  alt="Fabulous Chic" 
+                  className="w-full h-full object-contain"
+                />
+                {/* Green online dot */}
+                <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-[#00ff00] border-[3px] border-[#075E54] rounded-full"></span>
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold">fabulous chic</h4>
-                <p className="text-xs text-green-100">Typically replies within 10 minutes</p>
+                <h4 className="font-semibold">Fabulous Chic</h4>
+                <p className="text-xs text-gray-200">Typically replies within 10 minutes</p>
               </div>
               <button 
                 onClick={() => setIsWhatsAppOpen(false)}
-                className="hover:bg-[#1ea952] p-1 rounded transition-colors"
+                className="hover:bg-[#064741] p-1 rounded transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* Chat Body */}
-            <div className="h-64 bg-[#e5ddd5] p-4 overflow-y-auto" style={{
-              backgroundImage: 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGD4z0AEYBxVOKpwWBQCADEkAgH0KbVOAAAAAElFTkSuQmCC")',
-              backgroundRepeat: 'repeat'
-            }}>
+            {/* Chat Body with WhatsApp Background */}
+            <div 
+              className="h-56 md:h-72 p-4 overflow-y-auto"
+              style={{
+                backgroundColor: '#e5ddd5',
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.05'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                backgroundRepeat: 'repeat'
+              }}
+            >
               {chatMessages.map((msg, idx) => (
                 <div key={idx} className={`mb-3 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`rounded-lg p-3 shadow-sm max-w-[80%] ${
+                  <div className={`relative rounded-md p-3 shadow-sm max-w-[80%] ${
                     msg.sender === 'user' ? 'bg-[#dcf8c6]' : 'bg-white'
                   }`}>
+                    {/* Chat bubble tail - triangle pointer */}
+                    <div 
+                      className={`absolute top-0 ${
+                        msg.sender === 'user' 
+                          ? 'right-[-8px]' 
+                          : 'left-[-8px]'
+                      }`}
+                      style={{
+                        width: 0,
+                        height: 0,
+                        borderStyle: 'solid',
+                        ...(msg.sender === 'user' 
+                          ? {
+                              borderWidth: '0 0 12px 12px',
+                              borderColor: 'transparent transparent transparent #dcf8c6'
+                            }
+                          : {
+                              borderWidth: '0 12px 12px 0',
+                              borderColor: 'transparent #ffffff transparent transparent'
+                            })
+                      }}
+                    ></div>
                     {msg.isTyping ? (
                       <div className="flex gap-1">
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
@@ -690,16 +727,20 @@ const EasenchicHomepage = () => {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSendMessage} className="bg-gray-100 p-3 flex gap-2">
+            <form onSubmit={handleSendMessage} className="bg-[#f0f0f0] p-3 flex gap-2 items-center">
               <input 
                 type="text" 
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 px-4 py-2 rounded-full focus:outline-none"
+                className="flex-1 px-4 py-2.5 rounded-full outline-none bg-white border border-gray-300 focus:border-gray-400"
               />
-              <button type="submit" className="bg-[#25D366] text-white p-2 rounded-full hover:bg-[#1ea952] transition-colors">
-                <Send size={20} />
+              <button 
+                type="submit" 
+                className="bg-[#25D366] text-white p-3 rounded-full hover:bg-[#128C7E] transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!chatInput.trim()}
+              >
+                <Send size={18} />
               </button>
             </form>
           </div>
@@ -708,7 +749,7 @@ const EasenchicHomepage = () => {
         {/* WhatsApp Button */}
         <button 
           onClick={() => setIsWhatsAppOpen(!isWhatsAppOpen)}
-          className="bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-[#1ea952] transition-all duration-300 hover:scale-110 relative group"
+          className="bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:bg-green-700 transition-all duration-300 hover:scale-110 relative group"
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
