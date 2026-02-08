@@ -1,4 +1,7 @@
 export const getSmartResponse = (userMessageLower, currencyInfo = { symbol: '₦', code: 'NGN', country: 'Nigeria', rate: 1 }) => {
+  // Debug log to check currency info
+  console.log('Smart Response received currency:', currencyInfo);
+  
   const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
   
   // Helper to format prices in user's currency

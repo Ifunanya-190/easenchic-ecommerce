@@ -50,10 +50,13 @@ Important Instructions:
  * @param {Object} currencyInfo - Current currency information {symbol, code, country}
  * @returns {Promise<string>} - AI generated response
  */
-export const getAIResponse = async (userMessage, chatHistory = [], currencyInfo = { symbol: '₦', code: 'NGN', country: 'Nigeria' }) => {
+export const getAIResponse = async (userMessage, chatHistory = [], currencyInfo = { symbol: '₦', code: 'NGN', country: 'Nigeria', rate: 1 }) => {
+  // Log currency info for debugging
+  console.log('AI Service received currency:', currencyInfo);
+  
   // If no API key is set, use our smart response system
   if (!GEMINI_API_KEY || GEMINI_API_KEY.trim() === '') {
-    console.log('No API key - using smart responses');
+    console.log('No API key - using smart responses with currency:', currencyInfo);
     return getSmartResponse(userMessage.toLowerCase(), currencyInfo);
   }
 
@@ -96,9 +99,9 @@ export const getAIResponse = async (userMessage, chatHistory = [], currencyInfo 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('Gemini API error:', response.status, errorData);
-      console.log('Falling back to smart responses');
+      console.log('Falling back to smart responses with currency:', currencyInfo);
       // Fallback to smart responses on error
-      return getSmartResponse(userMessage.toLowerCase());
+      return getSmartResponse(userMessage.toLowerCase(), currencyInfo);
     }
 
     const data = await response.json();

@@ -100,13 +100,18 @@ const EasenchicHomepage = () => {
     setChatMessages(prev => [...prev, { text: '...', sender: 'bot', isTyping: true }]);
     
     try {
-      // Get AI response with chat history and currency info for context
+      // Get CURRENT currency info - ensure we use the latest selected currency
+      const currentCurrencyInfo = getCurrencyInfo();
       const currencyInfo = {
-        symbol: getCurrencyInfo().symbol,
-        code: selectedCurrency,
-        country: getCurrencyInfo().country,
-        rate: getCurrencyInfo().rate
+        symbol: currentCurrencyInfo.symbol,
+        code: currentCurrencyInfo.code,
+        country: currentCurrencyInfo.country,
+        rate: currentCurrencyInfo.rate
       };
+      
+      // Debug log for mobile testing
+      console.log('WhatsApp AI Currency Info:', currencyInfo);
+      
       const botResponse = await getAIResponse(userMessage, chatMessages, currencyInfo);
       
       // Remove typing indicator and add actual response
